@@ -1,0 +1,36 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        String url = "jdbc:mysql://localhost:3306/mydatabase";
+        String username = "root";
+        String password = "password";
+
+        try {
+            Connection conn = DriverManager.getConnection(url, username, password);
+
+            // This is the user input that we will directly use in our SQL query
+            // This is a bad practice as it can lead to SQL Injection attacks
+            String userInput = "1'; DROP TABLE users; --";
+
+            String query = "SELECT * FROM users WHERE id = '" + userInput + "'";
+
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                System.out.println("User: " + rs.getString("username"));
+            }
+
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+}

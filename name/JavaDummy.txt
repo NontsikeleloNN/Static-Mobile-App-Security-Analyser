@@ -1,0 +1,60 @@
+public class Example {
+    // Single-line comment
+
+    /*
+     * Multiline comment
+     * Line 2 of the comment
+     * Line 3 of the comment
+     */
+		String query = "SELECT user_id FROM user_data WHERE user_name = '"
+              + req.getParameter("userID")
+              + "' and user_password = '" + req.getParameter("pwd") +"'"; //this is also a comment
+			  
+    public static void main(String[] args) {
+        // Single-line comment inside the method
+
+        /*
+         * Multiline comment inside the method
+         * Line 2 of the comment
+         */
+
+        // Single-line comment
+        System.out.println("Hello, World!");
+
+        /*
+         * Multiline comment
+         * Line 2 of the comment
+         * Line 3 of the comment
+         */
+        System.out.println("This is line 1.");
+
+        // Single-line comment
+        System.out.println("This is line 2.");
+
+        /*
+         * Multiline comment
+         * Line 2 of the comment
+         */
+        System.out.println("This is line 3.");
+
+        // Continue adding more lines of code and comments as needed...
+
+        // Line 1
+        // Line 2
+        // Line 3
+
+        // Line 4
+        // Line 5
+        // Line 6
+
+        // Line 7
+        // Line 8
+        // Line 9
+
+        // ... Repeat this pattern to reach 200 lines
+
+        // Line 198
+        // Line 199
+        // Line 200
+    }
+}

@@ -1,0 +1,18 @@
+if there is a connection (+ or = ) between 2 variables and one of them is tainted, then both will be tainted and then
+form the connection between the 2 variables 
+
+>> maybe I could find functions that sanitize input and see if the tainted variable is sent as input and do this for the sql inj too
+>> it currently finds variables but only adds the first one [fixed]
+>> it says that all variables are dirty/tainted even though not all of them are clean [fixed]
+** to continue: add lines that do not end in a ;  // putting a pause on this 
+>>	and start with making connection between nodes
+	traversing
+	testing 
+	reports
+	UI for alpha (table for SQL, list gr
+	
+	
+	
+Need to do:
+- test for sanitisation and validation
+- eliminate analysing things in quotation marks (it finds var names)

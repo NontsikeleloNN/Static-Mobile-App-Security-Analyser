@@ -1,0 +1,15 @@
+digraph G {secondQuery
+testing
+testing -> notClean[color="red"]
+testing
+name
+clean
+name -> query[color="red"]
+name -> secondQuery[color="red"]
+notClean
+query -> other[color="red"]
+cleanB
+name
+other
+
+}
