@@ -31,7 +31,7 @@ public class CodeInjectionUI extends JFrame {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				try {
+				try {// <<BACKEND>>
 					CodeInjectionUI frame = new CodeInjectionUI();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -40,7 +40,7 @@ public class CodeInjectionUI extends JFrame {
 			}
 		});
 	}
-	
+	// <<BACKEND>>
 	public static ArrayList<String> setTokens(ArrayList<String> tokens) {
 		return tokens;
 	}
@@ -75,6 +75,7 @@ public class CodeInjectionUI extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ci = new CodeInjection(tokens);
+				// <<BACKEND>>
 				ci.inline(); 
 				textArea.setLineWrap(true);
 				ArrayList<String> list = ci.getFeedback();

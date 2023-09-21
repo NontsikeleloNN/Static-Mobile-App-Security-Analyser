@@ -27,7 +27,7 @@ public class TaintedUI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TaintedUI frame = new TaintedUI(is);
+					TaintedUI frame = new TaintedUI(is);// <<BACKEND>>
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -36,7 +36,7 @@ public class TaintedUI extends JFrame {
 		});
 	}
 
-	public static InputStream setInputStream(InputStream is) {
+	public static InputStream setInputStream(InputStream is) {// <<BACKEND>>
 		return is;
 	}
 	/**
@@ -56,7 +56,7 @@ public class TaintedUI extends JFrame {
 		JButton btnNewButton = new JButton("Load Graph");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				// <<BACKEND>>
 				BufferedImage image;
 				try {
 					//issue is that is is null

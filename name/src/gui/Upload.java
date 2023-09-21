@@ -43,7 +43,7 @@ public class Upload {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
+		EventQueue.invokeLater(new Runnable() { // <<BACKEND>>
 			public void run() {
 				try {
 					Upload window = new Upload(srcCode);
@@ -76,8 +76,19 @@ public class Upload {
 			public void actionPerformed(ActionEvent e) {
 			
 				 JFileChooser fileChooser = new JFileChooser();
-				    
-				    // Set an initial directory (optional)
+				 fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			        fileChooser.setMultiSelectionEnabled(true);
+			        int returnValue = fileChooser.showOpenDialog(null);
+
+			        if (returnValue == JFileChooser.APPROVE_OPTION) {
+			            File[] selectedFiles = fileChooser.getSelectedFiles();
+
+			            for (File file : selectedFiles) {
+			                System.out.println("Selected file: " + file.getName());
+			                // Add the file to your list of files for processing
+			            }
+			        }
+			        
 				 fileChooser.showOpenDialog(fileChooser);
 				 fileChooser.setVisible(true);
 			
@@ -85,7 +96,7 @@ public class Upload {
 				   // int result = fileChooser.showOpenDialog(btnOpenFile);
 		/**trying to make singles*/		  // srcCode = fileChooser.getSelectedFile();
 				  lex = new LexicalAnalysis(srcCode);
-				    txtUpload.setText(srcCode.getAbsolutePath());
+				   // txtUpload.setText(srcCode.getAbsolutePath());
 			}
 		});
 		btnOpenFile.setBounds(67, 54, 156, 23);
@@ -128,7 +139,7 @@ public class Upload {
 		JButton btnTokenize = new JButton("Tokenize");
 		btnTokenize.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				// <<BACKEND>>
 				List<String> list = lex.createString();
 				txtBefore.setLineWrap(true);
 				
@@ -147,7 +158,7 @@ public class Upload {
 					txtAfter.append("\n");
 				}
 				
-				
+				// <<BACKEND>>
 				graph.findTaintedInput(lex.makeLines(), lex.makeSpace());
 				graph.connectVertices(lex.makeLines());
 				
@@ -181,11 +192,11 @@ public class Upload {
 		JButton btnTaint = new JButton("Taint Analysis");
 		btnTaint.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				graph.printGraph(graph.getGraph());
+				graph.printGraph(graph.getGraph()); // <<BACKEND>>
 				
 				//send an input stream to tainted 
 				try {
-					InputStream in = graph.getGraphPrinter().things(); // need to send to TaintedUI
+					InputStream in = graph.getGraphPrinter().things(); // need to send to TaintedUI // <<BACKEND>>
 					
 					taint = new TaintedUI(in);
 					frame.setVisible(false);
@@ -194,8 +205,8 @@ public class Upload {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				CodeInjectionUI.setTokens(lex.makeLines()); // will this work?
-				CodeInjectionUI.tokens = lex.makeLines();
+				CodeInjectionUI.setTokens(lex.makeLines()); // <<BACKEND>>
+				CodeInjectionUI.tokens = lex.makeLines(); // <<BACKEND>>
 			}
 		});
 		btnTaint.setBounds(528, 567, 117, 23);
@@ -204,10 +215,10 @@ public class Upload {
 		JButton btnSQLInj = new JButton("SQL Injection");
 		btnSQLInj.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ciui = new CodeInjectionUI();
+				ciui = new CodeInjectionUI(); // <<BACKEND>>
 				frame.setVisible(false);
 				ciui.setVisible(true);
-				CodeInjectionUI.setTokens(lex.makeLines()); // will this work?
+				CodeInjectionUI.setTokens(lex.makeLines()); // will this work? // <<BACKEND>>
 				CodeInjectionUI.tokens = lex.makeLines();
 				 
 			}
