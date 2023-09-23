@@ -2,7 +2,10 @@ package dataAnalysis;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class CodeInjection {
@@ -42,11 +45,11 @@ public class CodeInjection {
 					}else if(examine.toLowerCase().contains(".getparameter()")|| !examine.toLowerCase().contains(".encoder()")) {
 						System.out.println("line considered dirty: " + examine);
 						feedback.add(examine); //dirty
-						advice.add("At least one of your SQL querys"+"\n"+" are concatenated with directly unsanitised input");
+						advice.add("At least one of your SQL querys are concatenated with directly unsanitised input from a parameter,"+"\n"+ " process the parameters before using them in queries");
 						continue;
 					}else if( variableResolver(examine)){
 						System.out.println("line considered dirty: " + examine);
-						advice.add("Your SQL query "+ examine+" is concatenated with indirectly unsanitised input");
+						advice.add("Your SQL query is concatenated with variable derived from unsanitised input,"+"\n"+" ensure all external input is processed before intergrating it into your system");
 						feedback.add(examine);
 						continue;
 					}else {
@@ -62,6 +65,9 @@ public class CodeInjection {
 		
 	}
 	public ArrayList<String> getAdvice(){
+		Set<String> set = new HashSet<>(advice);
+		advice.clear();
+		advice.addAll(set);
 		return advice;
 	}
 	private boolean variableResolver(String exam) {

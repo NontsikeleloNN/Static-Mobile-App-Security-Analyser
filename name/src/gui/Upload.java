@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 
 import dataAnalysis.*;
 import preprocess.LexicalAnalysis;
+import serialise.RunAnalysis;
 
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -33,6 +34,8 @@ public class Upload {
 	private JTextField txtUpload;
 	private JLabel lblTokenize;
 	public static  File srcCode = null;
+	private ArrayList<File> filesList;
+	private ArrayList<String> fileNames;
 	DataGraph graph = new DataGraph();
 	
 	LexicalAnalysis lex;
@@ -79,13 +82,16 @@ public class Upload {
 				 fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			        fileChooser.setMultiSelectionEnabled(true);
 			        int returnValue = fileChooser.showOpenDialog(null);
-
+			        filesList = new ArrayList<File>();
+			        fileNames = new ArrayList<String>();
 			        if (returnValue == JFileChooser.APPROVE_OPTION) {
 			            File[] selectedFiles = fileChooser.getSelectedFiles();
 
 			            for (File file : selectedFiles) {
 			                System.out.println("Selected file: " + file.getName());
-			                // Add the file to your list of files for processing
+			                
+			               filesList.add(file);
+			               fileNames.add(file.getName());
 			            }
 			        }
 			        
@@ -95,7 +101,7 @@ public class Upload {
 				
 				   // int result = fileChooser.showOpenDialog(btnOpenFile);
 		/**trying to make singles*/		  // srcCode = fileChooser.getSelectedFile();
-				  lex = new LexicalAnalysis(srcCode);
+				 // lex = new LexicalAnalysis(srcCode);
 				   // txtUpload.setText(srcCode.getAbsolutePath());
 			}
 		});
@@ -143,7 +149,7 @@ public class Upload {
 				List<String> list = lex.createString();
 				txtBefore.setLineWrap(true);
 				
-				for(String token : list) {
+				for(String token : fileNames) {
 					txtBefore.append(token);
 					txtBefore.append("\n");
 				}
@@ -191,23 +197,11 @@ public class Upload {
 		
 		JButton btnTaint = new JButton("Taint Analysis");
 		btnTaint.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				graph.printGraph(graph.getGraph()); // <<BACKEND>>
-				
-				//send an input stream to tainted 
-				try {
-					InputStream in = graph.getGraphPrinter().things(); // need to send to TaintedUI // <<BACKEND>>
-					
-					taint = new TaintedUI(in);
-					frame.setVisible(false);
-					taint.setVisible(true);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				CodeInjectionUI.setTokens(lex.makeLines()); // <<BACKEND>>
-				CodeInjectionUI.tokens = lex.makeLines(); // <<BACKEND>>
-			}
+			public void actionPerformed(ActionEvent e) {JOptionPane.showMessageDialog(null, "This is an information message. This is an information message.This is an information message." + "\n"+
+					 "\n"+"This is an information message.This is an information message.This is an information message.This is an information message." + "\n"
+					+ "This is an information message.This is an information message.This is an information message.This is an information message."+ "\n"
+					+ "This is an information message.This is an information message.This is an information message.This is an information message.This is an information message." + "\n"
+	                ,"Tainted Data Info", JOptionPane.INFORMATION_MESSAGE);}
 		});
 		btnTaint.setBounds(528, 567, 117, 23);
 		frame.getContentPane().add(btnTaint);
@@ -215,16 +209,25 @@ public class Upload {
 		JButton btnSQLInj = new JButton("SQL Injection");
 		btnSQLInj.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ciui = new CodeInjectionUI(); // <<BACKEND>>
-				frame.setVisible(false);
-				ciui.setVisible(true);
-				CodeInjectionUI.setTokens(lex.makeLines()); // will this work? // <<BACKEND>>
-				CodeInjectionUI.tokens = lex.makeLines();
-				 
+				JOptionPane.showMessageDialog(null, "This is an information message. This is an information message.This is an information message." + "\n"+
+						 "\n"+"This is an information message.This is an information message.This is an information message.This is an information message." + "\n"
+						+ "This is an information message.This is an information message.This is an information message.This is an information message."+ "\n"
+						+ "This is an information message.This is an information message.This is an information message.This is an information message.This is an information message." + "\n"
+		                ,"SQL Ijection Info", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		btnSQLInj.setBounds(203, 567, 123, 23);
 		frame.getContentPane().add(btnSQLInj);
+		
+		JButton btnNewButton = new JButton("New button");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				RunAnalysis run = new RunAnalysis(filesList);
+				
+			}
+		});
+		btnNewButton.setBounds(39, 567, 89, 23);
+		frame.getContentPane().add(btnNewButton);
 		
 	
 		

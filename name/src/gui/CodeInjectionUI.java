@@ -21,6 +21,10 @@ import java.awt.Font;
 
 public class CodeInjectionUI extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	CodeInjection ci;
 	public static ArrayList<String> tokens = new ArrayList<>();
