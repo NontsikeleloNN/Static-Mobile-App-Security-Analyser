@@ -29,6 +29,10 @@ public class CodeInjection {
 	 * @return
 	 */
 	
+	public int calcRatio() {
+		return 0;
+	}
+	
 	public void inline() {
 			Pattern inlineQuery = Pattern.compile("(\"\\s+SELECT | \"\\s+select|\"SELECT |\"select)(\\w+|\\s+)+([\\s$&+,:;=?@#|\"'<>.^*()%!-]+)+(\\w+)+(\\s+)");
 		for(int i = 0; i <= arrTokens.size() -1; i++) {

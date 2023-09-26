@@ -14,12 +14,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 
-public class CodeInjectionUI extends JFrame {
+public class ReportsUI extends JFrame {
 
 	/**
 	 * 
@@ -27,6 +28,7 @@ public class CodeInjectionUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	CodeInjection ci;
+	double Value;
 	public static ArrayList<String> tokens = new ArrayList<>();
 
 	/**
@@ -36,7 +38,7 @@ public class CodeInjectionUI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {// <<BACKEND>>
-					CodeInjectionUI frame = new CodeInjectionUI();
+					ReportsUI frame = new ReportsUI(0);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -52,9 +54,10 @@ public class CodeInjectionUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public CodeInjectionUI() {
+	public ReportsUI(double value) {
+		this.Value = value;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 913, 450);
+		setBounds(100, 100, 574, 429);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -68,63 +71,37 @@ public class CodeInjectionUI extends JFrame {
 		JTextArea textArea = new JTextArea();
 		spVulnerable.setViewportView(textArea);
 		
-		JScrollPane spVulnerable_1 = new JScrollPane();
-		spVulnerable_1.setBounds(468, 96, 389, 233);
-		contentPane.add(spVulnerable_1);
-		
-		JTextArea textArea_1 = new JTextArea();
-		spVulnerable_1.setViewportView(textArea_1);
-		
-		JButton btnNewButton = new JButton("Scan");
+		JButton btnNewButton = new JButton("Report");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ci = new CodeInjection(tokens);
-				// <<BACKEND>>
-				ci.inline(); 
-				textArea.setLineWrap(true);
-				ArrayList<String> list = ci.getFeedback();
-				ArrayList<String> list2 = (ArrayList<String>) list.stream().distinct().collect(Collectors.toList());
-				for(String line : list2) {
-					textArea.append(line); 
-					textArea.append("\n"); 
-					textArea.append("\n");
-					textArea.append("\n");
-				}
-				textArea_1.setLineWrap(true);
-				ArrayList<String> listA = ci.getAdvice();
-				ArrayList<String> list2B = (ArrayList<String>) listA.stream().distinct().collect(Collectors.toList());
-				for(String line :list2B) {
-					textArea_1.append(line); 
-					textArea_1.append("\n");
-					textArea_1.append("\n");
-					textArea_1.append("\n");
-				}
-			
 				
+				 DecimalFormat df = new DecimalFormat("###.###");
+				 
+				textArea.setLineWrap(true); 
+					textArea.append("Your mobile application has a combined taint ratio of: " + df.format(Value)); 
+					textArea.append("\n");		
+					textArea.append("The presence of SQL injection vulnerability has been found to be: ");
+					textArea.append("\n");		
+					textArea.append("For individual details on each file, please look to PDF reports generated");		
 				
 			}
 		});
-		btnNewButton.setBounds(318, 363, 89, 23);
+		btnNewButton.setBounds(224, 363, 89, 23);
 		contentPane.add(btnNewButton);
 		
-		JLabel lblNewLabel = new JLabel("Vulnerable Statments");
+		JLabel lblNewLabel = new JLabel("Overall Report Summary");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 13));
-		lblNewLabel.setBounds(51, 71, 141, 14);
+		lblNewLabel.setBounds(51, 71, 193, 14);
 		contentPane.add(lblNewLabel);
 		
-		JLabel lblNewLabel_1 = new JLabel("Recommendations");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 13));
-		lblNewLabel_1.setBounds(468, 71, 122, 14);
-		contentPane.add(lblNewLabel_1);
-		
-		JLabel lblNewLabel_2 = new JLabel("SQL Injection Analyser");
+		JLabel lblNewLabel_2 = new JLabel("Mobile Application Security Analyser");
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 15));
-		lblNewLabel_2.setBounds(261, 11, 182, 28);
+		lblNewLabel_2.setBounds(142, 11, 327, 28);
 		contentPane.add(lblNewLabel_2);
 		
-		JLabel lblNewLabel_3 = new JLabel("Scan");
+		JLabel lblNewLabel_3 = new JLabel("Generate Report");
 		lblNewLabel_3.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_3.setBounds(261, 357, 46, 33);
+		lblNewLabel_3.setBounds(99, 357, 115, 33);
 		contentPane.add(lblNewLabel_3);
 	}
 }
