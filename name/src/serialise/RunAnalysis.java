@@ -24,12 +24,14 @@ import dataAnalysis.DataGraph;
 import dataAnalysis.Node;
 
 public class RunAnalysis{
-	DataGraph graph = new DataGraph();
+	DataGraph graph; 
 	//private static ArrayList<File> selectedFiles;
 	LexicalAnalysis lex;
 	CodeInjection ci;
-	InputStream is;
+	InputStream is; 
 	BufferedImage bImage;
+	int totalSQL = 0;
+	double ratio;
 	private ArrayList<String> tokens;
 	
 	public RunAnalysis(ArrayList<File> files) {
@@ -37,14 +39,20 @@ public class RunAnalysis{
 	//	go through each of the files and run the different analysis each time and output reports in PDF
 		for (File file: files) {
 			System.out.println("count for file: " + ++fileCount);
+			graph = new DataGraph();
 			uploadCode(file);
 			taintedUI();
 			codeInj();
 			report(file);
 			
+			
 		}
 	}
 
+	public boolean present() {
+		if (ci.getSQLCount() > 0) return true;
+		return false;
+	}
 	private void report(File file) {
 		try (PDDocument document = new PDDocument()) {
 			PDPage page = new PDPage(PDRectangle.A4);
@@ -79,10 +87,18 @@ public class RunAnalysis{
 		             DecimalFormat df = new DecimalFormat("###.###");
 		       
 		             contentStream.newLineAtOffset(0, -20);
-		             contentStream.showText("The taint ratio of this particular file is: "+ df.format(calcTaintRatio()));
+		             int size = graph.size() ;
+		             int taint =  graph.getTainted();
+		             int difference = size - taint;
+		             System.out.println("difference: " + difference);
+		            
+		             double answer = difference*0.1;
+		             ratio = answer;
+		             System.out.println("Answer: "+ answer);
+		             contentStream.showText("The taint ratio of this particular file is: "+ df.format(answer));
 		             
 		             contentStream.newLineAtOffset(0, -20);
-		             String part = giveRecommendation(calcTaintRatio());
+		             String part = giveRecommendation(ratio);
 		             String parts [] = part.split("\n");
 		             for (String port : parts) {
 		            	 contentStream.showText(port);
@@ -155,6 +171,8 @@ public class RunAnalysis{
 				     
 					
 				  }
+				  contentStream1.newLineAtOffset(0, -10);
+				  contentStream1.showText("This document has a total of: "+ ci.getSQLCount()+" vulnerable SQL statements");
 	            contentStream1.endText();
 	            contentStream.close();
 	            contentStream1.close();
@@ -175,17 +193,20 @@ public class RunAnalysis{
 			return "1. Implement input validation to ensure only expected data is processed. \n"
 					+ "2. Use secure coding practices to prevent common coding mistakes. \n"
 					+ "3. Regularly update dependencies to patch known vulnerabilities. \n"
-					+ "4. Apply security headers and utilize HTTPS for secure communication";
+					+ "4. Apply security headers and utilize HTTPS for secure communication \n"
+					+ "Taint ratio is low";
 		}else if (val >= 0.2 && val < 0.5) {
 			return "1. Sanitize user inputs to protect against SQL injection attacks. \n"
 					+ "2. Implement access controls to restrict unauthorized access to sensitive data. \n"
 					+ "3. Use parameterized queries to prevent SQL injection vulnerabilities. \n"
-					+ "4. Apply proper error handling to avoid leaking sensitive information.";
+					+ "4. Apply proper error handling to avoid leaking sensitive information.\n"
+					+ "Taint ratio is moderately high";
 		}else {
 			return "Immediately fix identified SQL injection vulnerabilities. \n"
 					+ "Review and update access controls to prevent unauthorized access. \n"
 					+ "Conduct a thorough security audit to identify and address critical issues. \n"
-					+ "Apply patches or updates for known vulnerabilities without delay.";
+					+ "Apply patches or updates for known vulnerabilities without delay. \n"
+					+ "Taint ratio is very high!";
 		}
 	}
 	private void uploadCode(File file) {
@@ -195,6 +216,7 @@ public class RunAnalysis{
 			graph.connectVertices(lex.makeLines());
 			graph.printGraph(graph.getGraph());
 			try {
+				is = null;
 				is = graph.getGraphPrinter().things();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -205,6 +227,7 @@ public class RunAnalysis{
 	
 	public double calcTaintRatio() {
 		Set<Node> nodes = graph.getVertices();
+		
 		int good = 0;
 		int bad = 0;
 		for (Node node : nodes) {
@@ -215,7 +238,7 @@ public class RunAnalysis{
 			}
 		}
 		if(good == 0) {
-			return 0;
+			return 100;
 		}else {
 			return bad/good;
 		}

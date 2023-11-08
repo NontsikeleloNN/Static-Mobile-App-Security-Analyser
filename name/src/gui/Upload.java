@@ -27,6 +27,8 @@ import java.awt.Color;
 
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import java.awt.Button;
 
 public class Upload {
 
@@ -38,6 +40,7 @@ public class Upload {
 	double val = 0;
 	int fileCount = 0;
 	
+	RunAnalysis run;
 	LexicalAnalysis lex;
 	ReportsUI reportUI;
 	TaintedUI taint;
@@ -55,7 +58,11 @@ public class Upload {
 					e.printStackTrace();
 				}
 			}
+			
+			
 		});
+		
+		
 	}
 
 	/**
@@ -70,6 +77,7 @@ public class Upload {
 	 */
 	private void initialize(File srcCode) {
 		frame = new JFrame();
+		frame.getContentPane().setBackground(new Color(204, 204, 255));
 		frame.setBounds(100, 100, 590, 664);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -79,6 +87,8 @@ public class Upload {
 		frame.getContentPane().add(scrollPane);
 		
 		JTextArea txtBefore = new JTextArea();
+		txtBefore.setEditable(false);
+		txtBefore.setFont(new Font("Bookman Old Style", Font.ITALIC, 15));
 		scrollPane.setViewportView(txtBefore);
 		
 		JButton btnOpenFile = new JButton("Select Files");
@@ -121,8 +131,8 @@ public class Upload {
 		
 		JLabel lblUploadLabel = new JLabel("Upload your source code");
 		lblUploadLabel.setForeground(Color.DARK_GRAY);
-		lblUploadLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblUploadLabel.setBounds(67, 91, 156, 32);
+		lblUploadLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblUploadLabel.setBounds(47, 91, 214, 32);
 		frame.getContentPane().add(lblUploadLabel);
 		
 		
@@ -130,13 +140,13 @@ public class Upload {
 		
 		JLabel lblMASA = new JLabel("Mobile Application Security Analyser");
 		lblMASA.setForeground(Color.BLACK);
-		lblMASA.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblMASA.setBounds(143, 39, 293, 25);
+		lblMASA.setFont(new Font("Bookman Old Style", Font.ITALIC, 25));
+		lblMASA.setBounds(35, 21, 499, 59);
 		frame.getContentPane().add(lblMASA);
 		
 		JLabel lblSrc = new JLabel("Uploaded Files");
 		lblSrc.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-		lblSrc.setBounds(81, 180, 95, 16);
+		lblSrc.setBounds(67, 193, 95, 16);
 		frame.getContentPane().add(lblSrc);
 		
 		JButton btnTaint = new JButton("Taint Analysis");
@@ -168,8 +178,10 @@ public class Upload {
 		JButton btnNewButton = new JButton("Analyse");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				RunAnalysis run = new RunAnalysis(filesList);
+				 run = new RunAnalysis(filesList);
 				val += run.calcTaintRatio();
+				JOptionPane.showMessageDialog(null, "The analysis has been completed and the individual files have been created" +"\n"
+				+ "To see a summary of the analysis, press the Report Summary button upon closing this message","Analysis Complete", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		btnNewButton.setBounds(364, 491, 117, 23);
@@ -179,7 +191,7 @@ public class Upload {
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//presence of SQL injection vulnerability
-				reportUI = new ReportsUI(val/fileCount);
+				reportUI = new ReportsUI(val/fileCount,run.present());
 				reportUI.setVisible(true);
 				frame.dispose();
 			}

@@ -15,6 +15,7 @@ public class CodeInjection {
 	ArrayList<String> advice;
 	ArrayList<String> clean;
 	ArrayList<String> arrTokens;
+	int badCount= 0;
 	public CodeInjection(ArrayList<String> token) {
 		this.arrTokens = token;// this won't help 
 		this.feedback = new ArrayList<>();
@@ -45,14 +46,16 @@ public class CodeInjection {
 					// there is concentanation of SQL queries
 					
 					if(examine.contains("@") || examine.toLowerCase().contains(".encoder()")) {
-						continue;
+						continue; // clean
 					}else if(examine.toLowerCase().contains(".getparameter()")|| !examine.toLowerCase().contains(".encoder()")) {
+						badCount++;
 						System.out.println("line considered dirty: " + examine);
 						feedback.add(examine); //dirty
 						advice.add("At least one of your SQL querys are concatenated with directly unsanitised input from a parameter,"+"\n"+ " process the parameters before using them in queries");
 						continue;
 					}else if( variableResolver(examine)){
 						System.out.println("line considered dirty: " + examine);
+						badCount++;
 						advice.add("Your SQL query is concatenated with variable derived from unsanitised input,"+"\n"+" ensure all external input is processed before intergrating it into your system");
 						feedback.add(examine);
 						continue;
@@ -73,6 +76,9 @@ public class CodeInjection {
 		advice.clear();
 		advice.addAll(set);
 		return advice;
+	}
+	public int getSQLCount() {
+		return badCount;
 	}
 	private boolean variableResolver(String exam) {
 		String name = null;

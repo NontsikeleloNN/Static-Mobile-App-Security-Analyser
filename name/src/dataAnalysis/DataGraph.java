@@ -18,15 +18,38 @@ public class DataGraph {
 
 	private Map<Node, List<Node>> graph = new HashMap<>();
 	private GraphPrinter gp;
+	ArrayList<Node> tainted;
+	int count = 0;
+	int total = 0;
+	
 	public void addVertex(Node n) {
 		graph.put(n, new LinkedList<Node>());
-
 	}
 	
 	
 
 	public Map<Node, List<Node>> getGraph() {
 		return this.graph;
+	}
+	private int getNumTainted1 () {
+		return this.tainted.size();
+	}
+	private int getNumTainted() {
+		Set<Node> nodes = graph.keySet();
+		int count = 0;
+		for (Node node : nodes) {
+			if(node.isTainted()) {
+				count++;	
+			}
+			
+		}
+		return count;
+	}
+	public double ratio() {
+		return getNumTainted()/getSize();
+	}
+	private int getSize() {
+		return graph.keySet().size();
 	}
 	public void addEdge(Node from, Node to) {
 		// do checks on my own if the node exists or not
@@ -135,13 +158,14 @@ public class DataGraph {
 	public Set<Node> getVertices() {
 		return graph.keySet();
 	}
-
+// editText
 	private Boolean isVarKeyword(String word) {
 		if (word.toLowerCase().equals("boolean") || word.toLowerCase().equals("string")
 				|| word.toLowerCase().equals("byte") || word.toLowerCase().equals("char")
 				|| word.toLowerCase().equals("short") || word.toLowerCase().equals("int")
 				|| word.toLowerCase().equals("float") || word.toLowerCase().equals("double")
-				|| word.toLowerCase().equals("long") || word.toLowerCase().equals("integer")) {
+				|| word.toLowerCase().equals("long") || word.toLowerCase().equals("integer")
+				|| word.toLowerCase().equals("edittext")) {
 			return true;
 		}
 		return false;
@@ -187,7 +211,8 @@ public class DataGraph {
 		if (line.toLowerCase().contains("args") || line.toLowerCase().contains("new scanner")
 				|| line.toLowerCase().contains("scanner") || line.toLowerCase().contains("nextline")
 				|| line.toLowerCase().contains("gettext") || line.toLowerCase().contains("nameedittext") || line.toLowerCase().contains("feedbackedittext")
-				|| line.toLowerCase().contains("feedbacktextview") || line.toLowerCase().contains("getparameter")) { // add other http and file
+				|| line.toLowerCase().contains("feedbacktextview") || line.toLowerCase().contains("getparameter")
+				|| line.toLowerCase().contains("getstring")) { // add other http and file
 																							// things
 			return true;
 		}
@@ -315,7 +340,7 @@ public class DataGraph {
 		// if the line contains one of the taint words and an = or + and is one of the
 		// variables we've identified,
 		// then mark that one as tainted.
-		ArrayList<Node> tainted = new ArrayList<Node>();
+		 tainted = new ArrayList<Node>();
 		ArrayList<Node> words = findVars(spaces);
 		System.out.println("find tainted/vars: " + words.toString());
 		for (int i = 0; i <= lines.size() - 1; i++) {
@@ -363,19 +388,51 @@ public InputStream setInputStream() {
 	}
 	return null;
 }
+
+public int getTainted() {
+	return count;
+}
+public int size() {
+	return total;
+}
+
+public float getRatio() {
+	if(getTainted() != total) {
+		return getTainted()/(total-getTainted());
+	}
+	return 0;
+}
 	public void printGraph(Map <Node, List<Node>> pGraph) {
 		gp = new GraphPrinter();
 		
+		
 		for(Node n : pGraph.keySet()) { // for each of the keys in here
 			if(!pGraph.get(n).isEmpty()) {// if its corresponding list is not empty
-				
+				total = pGraph.keySet().size();
 				for(Node k : pGraph.get(n)){ // for each element in the non empty list of the node 
 					// I want to make connections via the graphviz
-					gp.addln(n.getName() + " -> "+ k.getName() + "[color=\"red\"]" );
+					if(n.isTainted()) {
+						count ++;
+						gp.addln(n.getName()+" [color=red]");
+						gp.addln(n.getName() + " -> "+ k.getName() + "[color=\"red\"]" );
+						
+					}else {
+						gp.addln(n.getName() + " -> "+ k.getName() + "[color=\"black\"]" );
+						
+					}
+					
 				}
 				
 			}else {
-				gp.addln(n.getName());
+				if(n.isTainted()) {
+					count++;
+					gp.addln(n.getName()+" [color=red]");
+				
+					
+				}else {
+					gp.addln(n.getName());
+					
+				}
 			}
 			
 		}
